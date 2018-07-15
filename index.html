@@ -1,0 +1,304 @@
+<html>
+<head>
+<title>Vue JS</title>
+    <style>
+        .circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 1px solid black;
+            display: inline-block;
+            margin: 40px;
+        }
+
+        .red {background: red;}
+        .blue {background: blue;}
+        .green {background: green;}
+    </style>
+</head>
+<body>
+<div id="app">
+	<input type="text" v-on:input="changeName">
+	<h1>String: {{name}}</h1>
+	<h1>Sum: {{10+60}}</h1>
+	<h1>Number: {{number}}</h1>
+	<h1>Method: {{sayHello()}}</h1>
+	<h1>If statement: {{isOk? 'I am okay': 'I am not okay'}}</h1>
+	<h1>Functions: {{string.split('').reverse().join('')}}</h1>
+	<h2><a v-bind:href="url">{{url}}</a></h2>
+	<h2 v-html="link"></h2>
+	<h2>Counter= {{counter}}</h2>
+	<button v-on:click="riseCounter">Increase</button>
+	<h2 v-on:mouseOver="onHover">Counter2= {{counter2}}</h2>
+	<button v-on:click="counter2++">Increase</button>
+	<hr/>
+	
+	<h2>{{title}} {{counter3}}</h2>
+	<button v-on:click="riseCounterFor(5, 'changed for 5', $event)">Increase for 5</button>
+	<button v-on:click="riseCounterFor(10, 'changed for 10', $event)">Increase for 10</button>
+	
+	<h2><a href="http://google.com" target="_blank" v-on:click="clickOnGoogle">Google</a></h2>
+	<h2><a href="http://google.com" target="_blank" v-on:click.prevent="">Google</a></h2>
+	
+	<h2 v-on:mousemove="handleMouseMove">X: {{x}} \ Y: {{y}}
+		<span v-on:mousemove.stop="">Do not change</span>
+	</h2>
+	
+	<hr/>
+	
+	<input type="text" v-on:keyup.enter.space="alertValue">
+	<br/>
+	<input type="text" v-model.lazy="inputValue">
+	<h2>{{inputValue}}</h2>
+	
+	<hr/>
+	
+	<div 
+	class="circle" 
+	@click="isActive = !isActive"
+	:class="getCssClasses"
+	></div>
+	
+	<div class="circle" :class="[color, {'red':isActive}]"></div>
+	<input type="text" v-model="color">
+	
+	<br/>
+	
+	<div class="circle" :style="circleClasses"></div>
+	<div class="circle" :style="[circleClasses, {'width': height + 'px'}]"></div>
+	<input type="text" v-model="color">
+	<input type="text" v-model="height">
+	
+	<br/>
+	
+	<h2 v-if="isVisible">I am visible!</h2>
+	<h2 v-else>No I am not!</h2>
+	<button @click="isVisible = !isVisible">Toggle</button>
+	
+	<br/>
+	<h2 v-if="type === 'a'">A</h2>
+	<h2 v-else-if="type === 'b'">B</h2>
+	<h2 v-else-if="type === 'c'">C</h2>
+	<h2 v-else>not match</h2>
+	<input type="text" v-model="type">
+	
+	<br/>
+	
+	<template v-if="isVisible">
+		<h2>I am title</h2>
+		<p>lorem ipsum</p>
+	</template>
+	
+	<template v-else>
+		<h2 style="color:red;">I am title</h2>
+		<p style="color:blue;">lorem ipsum</p>
+	</template>
+	
+	<br/>
+	<h1 v-show="isVisible">I am visible!</h1>
+	<h2 v-show="!isVisible">You can't see me!</h2>
+	<button @click="isVisible = !isVisible">Toggle</button>
+	
+	<br/>
+	<ul>
+		<li>{{people[0]}}</li>
+		<li>{{people[1]}}</li>
+		<li>{{people[2]}}</li>
+	</ul>
+	
+	<br/>
+	<ul>
+		<li v-for="(person, index) in people">{{index+1}} {{person}}</li>
+	</ul>
+	
+	<br/>
+	<ul>
+		<li v-for="(person, index) in people2">{{index+1}}. {{person.name}} - <b>{{person.age}}</b></li>
+	</ul>
+	
+	<br/>
+	<ol>
+		<li v-for="num in 3">{{num}}</li>
+	</ol>
+	
+	<br/>
+	<ul>
+		<li v-for="(value, key, index) in person"><em>{{index+1}}</em><b>{{key}}</b> {{value}}</li>
+	</ul>
+	
+	<br/>
+	<h2>Counter {{counter}} \ {{counter2}}</h2>
+	<h3>Result: {{ result() }}</h3>
+	<h3>Computed Result: {{ computedResult}}</h3>
+	<button @click="add">Add</button>
+	<button @click="sub">Sub</button>
+	
+	<button @click="counter2++">Add counter 2</button>
+	
+	<br/>
+	<h2 ref="heading">{{title}}</h2>
+	<button @click="updateFirstTitle">Update first title</button>
+	<hr ref="horLine">
+	
+	<br/>
+	<h2>{{title}}</h2>
+	<button @click="title = 'Changed title'">Change</button>
+	<button @click="doDestroy">Destroy</button>
+	
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+<script>
+	new Vue({
+		el: '#app',
+		data:{
+			name: 'Vue!',
+			number: 100,
+			isOk: false,
+			string: 'My name is Vitali',
+			url: 'http://google.com',
+			link: '<a href="http://google.com">Google</a>',
+			counter: 0,
+			counter2: 0,
+			counter3: 0,
+			condition: 'Less than 3',
+			title: "Counter",
+			x: 0,
+			y: 0,
+			inputValue: 'Initial value',
+			isActive: false,
+			color: 'blue',
+			height: 100,
+			isVisible: true,
+			type: 'a',
+			people: [
+				'Vlad',
+				'Max',
+				'Elena',
+				'Volodya'
+			],
+			people2: [
+				{name: 'Vlad', age: 20},
+				{name: 'Max', age: 25},
+				{name: 'Elena', age: 30}
+			],
+			person:{
+				name: 'Max',
+				age: 50,
+				job: 'Frontend'
+			},
+			title: 'Hello! I am Vue!'
+		},
+		computed:{
+			getCssClasses: function(){
+				return{
+					'red': this.isActive,
+					'green': !this.isActive
+				}
+			},
+			
+			circleClasses: function(){
+				return{
+					'background': this.color, 
+					'height': this.height + 'px'
+				}
+			},
+			
+			computedResult: function(){
+				console.log("ComputedResult was called");
+				return this.counter > 3 ? 'More than 3' : 'Less than 3';
+			}
+		},
+		
+		watch:{
+			counter: function(val){
+				console.log('From Watch object', this.counter);
+			}
+		},
+		
+		beforeCreate: function(){
+			console.log('Before Create');
+		},
+		created: function(){
+			console.log('Created');
+		},
+		beforeMount: function(){
+			console.log('Before Mount');
+		},
+		mounted: function(){
+			console.log('Mounted');
+		},
+		beforeUpdate: function(){
+			console.log('Before Update');
+		},
+		updated: function(){
+			console.log('Updated');
+		},
+		beforeDestroy: function(){
+			console.log('Before Destroy');
+		},
+		destroyed: function(){
+			console.log('Destroyed');
+		},
+		
+		
+		methods:{
+			changeName: function(event){
+				this.name = event.target.value
+			},
+			sayHello: function(){
+				return 'I am function';
+			},
+			riseCounter: function(){
+				this.counter++;
+			},
+			onHover: function(event){
+				event.target.style.color = 'red'
+			},
+			riseCounterFor: function(num, str, event){
+				this.counter3+=num;
+				this.title = str;
+				if(num == 5){
+					event.target.style.color = 'blue'
+				}
+				else if(num == 10){
+					event.target.style.color = 'green'
+				}
+			},
+			clickOnGoogle: function(event){
+				event.preventDefault();
+			},
+			handleMouseMove: function(event){
+				this.x = event.clientX;
+				this.y = event.clientY;
+			},
+			alertValue: function(event){
+				alert(event.target.value);
+			
+			},
+			add: function(){
+				this.counter++;
+			},
+			sub: function(){
+				this.counter--;
+			},
+			result: function(){
+				console.log("Result was called");
+				return this.counter > 3 ? 'More than 3' : 'Less than 3';
+			},
+			updateFirstTitle: function(){
+				this.title = 'New title!';
+				this.$refs.heading.style.color = 'red';
+				this.$refs.horLine.style.color = 'red';
+				console.log(this.$refs);
+			},
+			doDestroy: function(){
+				this.$destroy();
+			}
+			
+			
+		}
+	})
+</script>
+</body>
+</html>
